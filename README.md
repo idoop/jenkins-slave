@@ -1,2 +1,2 @@
-# jenkins-slave
+# Jenkins-slave
 As jenkins Slave
