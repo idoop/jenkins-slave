@@ -4,6 +4,8 @@ MAINTAINER Swire Chen<idoop@msn.cn>
 #----Install .Net Core SDK & Nuget & Python3----#
 USER root
 RUN apt-get update \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list \
     && apt-get install -y --no-install-recommends \
         libc6 \
         libcurl3 \
@@ -32,10 +34,7 @@ RUN apt-get update \
         python3-dev \
         python3-pip \
         build-essential \
-    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list' \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends powershell \
+        powershell \
     && rm -rf /var/lib/apt/lists/* \
     && git config --global credential.helper store
     
