@@ -43,12 +43,11 @@ RUN apt-get update \
 # Set Default symbolic python ==> python3,pip ==> pip3,and some modules
 RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
     && ln -s /usr/bin/pip3 /usr/bin/pip \
-    && pip install setuptools \
+    && pip install setuptools wheel\
     && pip install six asn1crypto bcrypt chardet nose mock pbr pyasn1 requests \
     && pip install cffi multi_key_dict cryptography idna paramiko pyapi-gitlab \
     && pip install pyasn1 pycparser PyNaCl python-jenkins selenium
 
-    
 # Install .NET Core SDK
 ENV DOTNET_SDK_VERSION 2.1.4
 ENV DOTNET_SDK_DOWNLOAD_URL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz
