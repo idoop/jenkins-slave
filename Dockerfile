@@ -33,13 +33,18 @@ RUN apt-get update \
         python3-pip \
         build-essential \
         apt-transport-https \
+	
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends powershell \
+    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
+    && echo "deb http://download.mono-project.com/repo/debian stable-stretch main" | tee /etc/apt/sources.list.d/mono-official-stable.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends mono-devel \
     && rm -rf /var/lib/apt/lists/* \
     && git config --global credential.helper store
-    
+
 # Set Default symbolic python ==> python3,pip ==> pip3,and some modules
 RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
     && ln -s /usr/bin/pip3 /usr/bin/pip \
