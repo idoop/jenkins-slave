@@ -53,6 +53,20 @@ RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
     && pip install cffi multi_key_dict cryptography idna paramiko pyapi-gitlab \
     && pip install pyasn1 pycparser PyNaCl python-jenkins selenium
 
+# Install Scanner for MSBuild 4.0+
+ENV SCANNER_MSBUILD_VERSIONI 4.0.2.892
+ENV SCANNER_MSBUILD_DOWNLOAD_URL https://github.com/SonarSource/sonar-scanner-msbuild/releases/download/4.0.2.892/sonar-scanner-msbuild-4.0.2.892.zip
+ENV SCANNER_MSBUILD_DOWNLOAD_SHA fcfe6694610e111ba11affc1434ffaa5e9ada58e11aef4935113e7b6944f57acd4d547c2317c7522dd202e45ba7730ed8594c532a3b17b94e921fa46378107dd
+
+RUN curl -SL $SCANNER_MSBUILD_DOWNLOAD_URL --output sonar-scanner-msbuild.zip \
+    && echo "$SCANNER_MSBUILD_DOWNLOAD_SHA sonar-scanner-msbuild.zip" | sha512sum -c - \
+    && mkdir -p /usr/share/sonar-scanner-msbuild \
+    && unzip sonar-scanner-msbuild.zip -d /usr/share/sonar-scanner-msbuild \
+    && rm sonar-scanner-msbuild.zip \
+    && ln -s /usr/share/sonar-scanner-msbuild/MSBuild.SonarQube.Runner.exe /usr/bin/MSBuild.SonarQube.Runner.exe \
+    && chmod +x /usr/share/sonar-scanner-msbuild/sonar-scanner-3.0.3.778/bin/sonar-scanner
+
+
 # Install .NET Core SDK
 ENV DOTNET_SDK_VERSION 2.1.4
 ENV DOTNET_SDK_DOWNLOAD_URL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz
