@@ -65,7 +65,7 @@ RUN curl -SL $SCANNER_MSBUILD_DOWNLOAD_URL --output sonar-scanner-msbuild.zip \
     && rm sonar-scanner-msbuild.zip \
     && ln -s /usr/share/sonar-scanner-msbuild/MSBuild.SonarQube.Runner.exe /usr/bin/MSBuild.SonarQube.Runner.exe \
     && chmod +x /usr/share/sonar-scanner-msbuild/sonar-scanner-3.0.3.778/bin/sonar-scanner \
-    && sed -i '21d' /usr/share/sonar-scanner-msbuild/SonarQube.Analysis.xml && sed -i '\  \22a <!--' /usr/share/sonar-scanner-msbuild/SonarQube.Analysis.xml && sed -i 's/localhost:9000/192.168.1.61:9000/g' /usr/share/sonar-scanner-msbuild/SonarQube.Analysis.xml
+    && sed -i '21d' /usr/share/sonar-scanner-msbuild/SonarQube.Analysis.xml && sed -i '22a \  \<!--' /usr/share/sonar-scanner-msbuild/SonarQube.Analysis.xml && sed -i 's/localhost:9000/192.168.1.61:9000/g' /usr/share/sonar-scanner-msbuild/SonarQube.Analysis.xml
 
 # Install .NET Core SDK
 ENV DOTNET_SDK_VERSION 2.1.4
