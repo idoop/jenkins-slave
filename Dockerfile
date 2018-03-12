@@ -53,12 +53,6 @@ RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
     && pip install cffi multi_key_dict cryptography idna paramiko pyapi-gitlab \
     && pip install pyasn1 pycparser PyNaCl python-jenkins selenium
 
-#: Install Node.js, tslint, typescript
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash \
-    && nvm install 8.10.0 \
-    && nvm use 8.10.0 \
-    && npm install tslint typescript -g
-
 
 # Install Scanner for MSBuild 4.0+
 ENV SCANNER_MSBUILD_VERSIONI 4.0.2.892
