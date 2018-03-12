@@ -55,7 +55,6 @@ RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
 
 #: Install Node.js, tslint, typescript
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash \
-    && source ~/.bashrc \
     && nvm install 8.10.0 \
     && nvm use 8.10.0 \
     && npm install tslint typescript -g
