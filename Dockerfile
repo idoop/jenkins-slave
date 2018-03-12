@@ -54,7 +54,7 @@ RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
     && pip install pyasn1 pycparser PyNaCl python-jenkins selenium
 
 #: Install Node.js, tslint, typescript
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v1.33.8/install.sh | bash \
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash \
     && source ~/.bashrc \
     && nvm install 8.10.0 \
     && nvm use 8.10.0 \
