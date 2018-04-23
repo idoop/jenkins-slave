@@ -45,14 +45,13 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && git config --global credential.helper store
 
+COPY requirements.txt /var/
+
 # Set Default symbolic python ==> python3,pip ==> pip3,and some modules
 RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
     && ln -s /usr/bin/pip3 /usr/bin/pip \
-    && pip install setuptools wheel\
-    && pip install six asn1crypto bcrypt chardet nose mock pbr pyasn1 requests \
-    && pip install cffi multi_key_dict cryptography idna paramiko pyapi-gitlab \
-    && pip install pyasn1 pycparser PyNaCl python-jenkins selenium
-
+    && pip install setuptools wheel \
+    && pip install -r /var/requirements.txt
 
 # Install Scanner for MSBuild 4.0+
 ENV SCANNER_MSBUILD_VERSIONI 4.0.2.892
