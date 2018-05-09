@@ -33,20 +33,39 @@ RUN apt-get update \
         python3-pip \
         build-essential \
         apt-transport-https \
+	
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends powershell \
+    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
+    && echo "deb http://download.mono-project.com/repo/debian stable-stretch main" | tee /etc/apt/sources.list.d/mono-official-stable.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends mono-devel \
     && rm -rf /var/lib/apt/lists/* \
     && git config --global credential.helper store
-    
+
+COPY requirements.txt /var/
+
 # Set Default symbolic python ==> python3,pip ==> pip3,and some modules
 RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
     && ln -s /usr/bin/pip3 /usr/bin/pip \
-    && pip install setuptools wheel\
-    && pip install six asn1crypto bcrypt chardet nose mock pbr pyasn1 requests \
-    && pip install cffi multi_key_dict cryptography idna paramiko pyapi-gitlab \
-    && pip install pyasn1 pycparser PyNaCl python-jenkins selenium
+    && pip install setuptools wheel \
+    && pip install -r /var/requirements.txt
+
+# Install Scanner for MSBuild 4.0+
+ENV SCANNER_MSBUILD_VERSIONI 4.0.2.892
+ENV SCANNER_MSBUILD_DOWNLOAD_URL https://github.com/SonarSource/sonar-scanner-msbuild/releases/download/4.0.2.892/sonar-scanner-msbuild-4.0.2.892.zip
+ENV SCANNER_MSBUILD_DOWNLOAD_SHA fcfe6694610e111ba11affc1434ffaa5e9ada58e11aef4935113e7b6944f57acd4d547c2317c7522dd202e45ba7730ed8594c532a3b17b94e921fa46378107dd
+
+RUN curl -SL $SCANNER_MSBUILD_DOWNLOAD_URL --output sonar-scanner-msbuild.zip \
+    && echo "$SCANNER_MSBUILD_DOWNLOAD_SHA sonar-scanner-msbuild.zip" | sha512sum -c - \
+    && mkdir -p /usr/share/sonar-scanner-msbuild \
+    && unzip sonar-scanner-msbuild.zip -d /usr/share/sonar-scanner-msbuild \
+    && rm sonar-scanner-msbuild.zip \
+    && ln -s /usr/share/sonar-scanner-msbuild/MSBuild.SonarQube.Runner.exe /usr/bin/MSBuild.SonarQube.Runner.exe \
+    && chmod +x /usr/share/sonar-scanner-msbuild/sonar-scanner-3.0.3.778/bin/sonar-scanner \
+    && sed -i '21d' /usr/share/sonar-scanner-msbuild/SonarQube.Analysis.xml && sed -i '22a \  \<!--' /usr/share/sonar-scanner-msbuild/SonarQube.Analysis.xml && sed -i 's/localhost:9000/192.168.1.61:9000/g' /usr/share/sonar-scanner-msbuild/SonarQube.Analysis.xml
 
 # Install .NET Core SDK
 ENV DOTNET_SDK_VERSION 2.1.4
