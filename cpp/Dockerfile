@@ -1,58 +1,38 @@
 FROM jenkins/jnlp-slave:latest
 MAINTAINER Swire Chen<idoop@msn.cn>
-
-#----Install .Net Core SDK & Nuget & Python3----#
 USER root
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        libc6 \
-        libcurl3 \
-        libgcc1 \
-        libgssapi-krb5-2 \
-        libicu57 \
-        liblttng-ust0 \
-        libssl1.0.2 \
-        libstdc++6 \
-        libunwind8 \
-        libuuid1 \
-        python3 \
-        zlib1g \
-        g++ \
-        m4 \
-        make \
-        cmake \
-        automake \
-        libtool \
-        zlib1g-dev \
-        libssl-dev \
-        libapr1-dev \
-        libboost-system-dev \
-        python3-dev \
-        python3-pip \
-        build-essential \
+ARG UV_VERSION=1.20.2
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    automake \
+    qt5-default \
+    libtool \
+    python3-dev \
+    python3-pip \
+    libssl-dev \
+    zlib1g-dev \
+    libncurses5-dev \
     && rm -rf /var/lib/apt/lists/* \
-    && git config --global credential.helper store
-    
-# Set Default symbolic python ==> python3,pip ==> pip3,and some modules
-RUN rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
+    && curl -o libuv-v${UV_VERSION}.tar.gz https://dist.libuv.org/dist/v${UV_VERSION}/libuv-v${UV_VERSION}.tar.gz \
+    && tar -zxf libuv-v${UV_VERSION}.tar.gz \
+    && rm libuv-v${UV_VERSION}.tar.gz \
+    && cd libuv-v${UV_VERSION} \
+    && mkdir build \
+    && cd build \
+    && ../autogen.sh \
+    && ../configure \
+    && make -j 2 \
+    && make install \
+    && cd ../../ \
+    && rm libuv-v${UV_VERSION} -rf \
+    && ln /usr/local/lib/libuv.so.1.0.0 /lib/x86_64-linux-gnu/libuv.so.1 \
+    && rm /usr/bin/python \
+    && ln -s /usr/bin/python3.5 /usr/bin/python \
     && ln -s /usr/bin/pip3 /usr/bin/pip \
-    && pip install setuptools \
+    && pip install setuptools wheel\
     && pip install six asn1crypto bcrypt chardet nose mock pbr pyasn1 requests \
     && pip install cffi multi_key_dict cryptography idna paramiko pyapi-gitlab \
-    && pip install pyasn1 pycparser PyNaCl python-jenkins selenium
-
-# Install libuv
-ENV LIBUV_VERSION 1.16.0
-RUN curl -SL https://github.com/libuv/libuv/archive/v${LIBUV_VERSION}.tar.gz --output v${LIBUV_VERSION}.tar.gz \
-    && tar -zxf v${LIBUV_VERSION}.tar.gz \
-    && rm -rf v${LIBUV_VERSION}.tar.gz \
-    && cd libuv-${LIBUV_VERSION} \
-    && sh autogen.sh \
-    && ./configure \
-    && make \
-    && make check \
-    && make install \
-    && cd ../ \
-    && rm -rf libuv-${LIBUV_VERSION}
+    && pip install pyasn1 pycparser PyNaCl python-jenkins seleniu
 
 USER jenkins
