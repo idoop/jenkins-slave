@@ -33,6 +33,6 @@ RUN apt-get update && \
     && pip install setuptools wheel\
     && pip install six asn1crypto bcrypt chardet nose mock pbr pyasn1 requests \
     && pip install cffi multi_key_dict cryptography idna paramiko pyapi-gitlab \
-    && pip install pyasn1 pycparser PyNaCl python-jenkins seleniu
+    && pip install pyasn1 pycparser PyNaCl python-jenkins selenium
 
 USER jenkins
