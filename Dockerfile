@@ -13,7 +13,8 @@ RUN apt-get update \
     && rm /usr/bin/python && ln -s /usr/bin/python3.5 /usr/bin/python \
     && ln -s /usr/bin/pip3 /usr/bin/pip \
     && pip install setuptools wheel \
-    && pip install pyapi-gitlab==7.8.5 \
+    && pip install paramiko \
+                    pyapi-gitlab==7.8.5 \
                     python-jenkins==1.0.0 \
                     urllib3==1.22 \
                     requests==2.18.4
