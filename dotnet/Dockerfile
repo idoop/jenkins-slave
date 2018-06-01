@@ -13,6 +13,10 @@ RUN apt-get update \
         libssl1.0.2 \
         libstdc++6 \
         zlib1g \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/microsoft.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends powershell \
     && rm -rf /var/lib/apt/lists/*
 
 # Install .NET Core SDK
