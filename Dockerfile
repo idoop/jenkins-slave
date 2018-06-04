@@ -15,12 +15,12 @@ RUN apt-get update \
     && pip install setuptools wheel \
     && pip install paramiko==2.4.1 \
 		pyapi-gitlab==7.8.5 \
-                python-jenkins==1.0.0 \
+                python-jenkins==1.0.1 \
                 urllib3==1.22 \
                 requests==2.18.4 \
-		pytz==2017.3 \
-		kubernetes==4.0.0 \
-		PyYAML==3.12 \
+		pytz==2018.4 \
+		kubernetes==6.0.0 \
+		PyYAML==3.12
 		
 
 # Set Timezone with CST
