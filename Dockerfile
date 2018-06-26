@@ -18,7 +18,9 @@ RUN apt-get update \
                 python-jenkins==1.0.1 \
                 urllib3==1.22 \
                 requests==2.18.4 \
-                kubernetes==6.0.0
+                kubernetes==6.0.0 \
+		pytz==2018.4 \
+		PyYAML==3.12
 		
 		
 
