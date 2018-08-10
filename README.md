@@ -1,4 +1,4 @@
-# jenkins-slave
+# Jenkins-slave
 As jenkins Slave
 
 **Base slave**: inlucde `python3-dev`,`pip3`
