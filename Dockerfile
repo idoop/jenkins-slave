@@ -21,6 +21,8 @@ RUN apt-get update \
                 kubernetes==6.0.0 \
                 pytz==2018.4 \
                 PyYAML==3.12 \
+                msgpack \
+                pytest \
     # Set Timezone with CST
     && /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo 'Asia/Shanghai' >/etc/timezone
