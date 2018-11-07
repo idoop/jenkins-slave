@@ -10,26 +10,36 @@ ENV ANDROID_SDK_URL="https://dl.google.com/android/repository/tools_r25.2.5-linu
     MAVEN_HOME="/usr/share/maven" \
     GRADLE_HOME="/usr/share/gradle" \
     ANDROID_HOME="/opt/android" \
-    NODEJS_VERSION="6.14.3"
+    NODEJS_HOME="/opt/node" \
+    NODEJS_VERSION="6.14.3" \
+    GRADLE_VERSION=4.5.1
 
-ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$ANT_HOME/bin:$MAVEN_HOME/bin:$GRADLE_HOME/bin:$PATH:/opt/node/bin
+ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$ANT_HOME/bin:$MAVEN_HOME/bin:$GRADLE_HOME/bin:$NODEJS_HOME/bin
 
-RUN mkdir -p /opt/node/ -p \
-    && dpkg --add-architecture i386 \
+RUN sudo unzip /tmp/gradle-$GRADLE_VERSION-bin.zip -d /tmp && rm /tmp/gradle-$GRADLE_VERSION-bin.zip
+RUN sudo mv /tmp/gradle-$GRADLE_VERSION /opt/gradle
+ENV PATH="/opt/gradle/bin:${PATH}"
+
+RUN dpkg --add-architecture i386 \
     && apt-get -qq update \
     && apt-get -qq install -y lib32stdc++6 lib32z1 --no-install-recommends \
     
     # Install Nodejs
-    && cd /opt/node \
+    && mkdir -p ${NODEJS_HOME}/bin && cd ${NODEJS_HOME} \
     && curl -sL https://nodejs.org/dist/v${NODEJS_VERSION}/node-v${NODEJS_VERSION}-linux-x64.tar.gz | tar xz --strip-components=1 \
     
     # Install Ionic Cordova
-    && npm install -g ionic cordova gulp \
+    && npm install -g ionic cordova gulp cordova-hot-code-push-cli \
+
+    # Install Gradle
+    && curl -SL https://downloads.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -o /tmp/gradle.zip \
+    && unzip /tmp/gradle.zip -d /tmp/ && rm /tmp/gradle.zip \
+    && mv /tmp/gradle-$GRADLE_VERSION /usr/share/gradle \
 
     # Install Android SDK
-    && cd /opt && mkdir android && cd android \
-    && curl -SL ${ANDROID_SDK_URL} -o tools.zip \
-    && unzip tools.zip && rm tools.zip \
+    && mkdir -p ${ANDROID_HOME} && cd ${ANDROID_HOME} \
+    && curl -SL ${ANDROID_SDK_URL} -o /tmp/tools.zip \
+    && unzip /tmp/tools.zip -d ./ && rm /tmp/tools.zip \
     && echo y | android update sdk -a -u -t platform-tools,${ANDROID_APIS},build-tools-${ANDROID_BUILD_TOOLS_VERSION} \
     && chmod a+x -R $ANDROID_HOME \
     && chown -R root:root $ANDROID_HOME \
