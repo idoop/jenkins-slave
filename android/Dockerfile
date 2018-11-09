@@ -16,10 +16,6 @@ ENV ANDROID_SDK_URL="https://dl.google.com/android/repository/tools_r25.2.5-linu
 
 ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$ANT_HOME/bin:$MAVEN_HOME/bin:$GRADLE_HOME/bin:$NODEJS_HOME/bin
 
-RUN sudo unzip /tmp/gradle-$GRADLE_VERSION-bin.zip -d /tmp && rm /tmp/gradle-$GRADLE_VERSION-bin.zip
-RUN sudo mv /tmp/gradle-$GRADLE_VERSION /opt/gradle
-ENV PATH="/opt/gradle/bin:${PATH}"
-
 RUN dpkg --add-architecture i386 \
     && apt-get -qq update \
     && apt-get -qq install -y lib32stdc++6 lib32z1 --no-install-recommends \
