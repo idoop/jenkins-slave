@@ -20,6 +20,9 @@ RUN dpkg --add-architecture i386 \
     && apt-get -qq update \
     && apt-get -qq install -y lib32stdc++6 lib32z1 --no-install-recommends \
     
+    # Install OSS2 for APK hot upgrade
+    && pip install oss2 \
+    
     # Install Nodejs
     && mkdir -p ${NODEJS_HOME}/bin && cd ${NODEJS_HOME} \
     && curl -sL https://nodejs.org/dist/v${NODEJS_VERSION}/node-v${NODEJS_VERSION}-linux-x64.tar.gz | tar xz --strip-components=1 \
