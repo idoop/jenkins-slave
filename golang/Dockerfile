@@ -11,10 +11,10 @@ RUN curl -SL --output go1.11.4.linux-amd64.tar.gz https://dl.google.com/go/go$GO
     && echo "${GOLANG_RELEASE_SHA256} go$GOLANG_VERSION.linux-amd64.tar.gz" | sha256sum -c - \
     && tar -C /usr/local -xzf go$GOLANG_VERSION.linux-amd64.tar.gz \
     && rm go$GOLANG_VERSION.linux-amd64.tar.gz \
-    && echo "PATH=\$PATH:/usr/local/go/bin" >> /home/jenkins/.bashrc \
     && mkdir -p /home/jenkins/go \
-    && echo "GOPATH=/home/jenkins/go" >> /home/jenkins/.bashrc \
-    && echo "PATH=\$PATH:/home/jenkins/go/bin" >> /home/jenkins/.bashrc \
-    && echo "GOBIN=/home/jenkins/go/bin" >> /home/jenkins/.bashrc
+    && echo "PATH=\$PATH:/usr/local/go/bin" >> /etc/profile \
+    && echo "GOPATH=/home/jenkins/go" >> /etc/profile \
+    && echo "PATH=\$PATH:/home/jenkins/go/bin" >> /etc/profile \
+    && echo "GOBIN=/home/jenkins/go/bin" >> /etc/profile
 
 USER jenkins
