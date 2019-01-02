@@ -4,6 +4,13 @@ MAINTAINER Swire Chen<idoop@msn.cn>
 
 USER root
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    build-essential \
+    automake \
+    libtool \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV GOLANG_VERSION=1.11.4 \
     GOLANG_RELEASE_SHA256=fb26c30e6a04ad937bbc657a1b5bba92f80096af1e8ee6da6430c045a8db3a5b \
     GOPATH=/home/jenkins/go \
