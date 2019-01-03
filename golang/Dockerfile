@@ -8,6 +8,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     build-essential \
     automake \
+    qt5-default \
     libtool \
     && rm -rf /var/lib/apt/lists/*
 
@@ -21,6 +22,15 @@ RUN curl -SL --output go1.11.4.linux-amd64.tar.gz https://dl.google.com/go/go$GO
     && echo "${GOLANG_RELEASE_SHA256} go$GOLANG_VERSION.linux-amd64.tar.gz" | sha256sum -c - \
     && tar -C /usr/local -xzf go$GOLANG_VERSION.linux-amd64.tar.gz \
     && rm go$GOLANG_VERSION.linux-amd64.tar.gz \
-    && mkdir -p /home/jenkins/go
+    && mkdir -p /home/jenkins/go \
+    && chown -R jenkins:jenkins /home/jenkins/go
+
 
 USER jenkins
+
+RUN mkdir -p /home/jenkins/GoModule \
+    && cd /home/jenkins/GoModule \
+    && export GO111MODULE=on \
+    && go mod init hello \
+    && echo "\nrequire go.uber.org/dig v1.6.0" >> go.mod \
+    && go mod download
