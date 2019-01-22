@@ -7,6 +7,10 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     python3-dev \
     python3-pip \
+    python-dev \
+    libsasl2-dev \
+    libldap2-dev \
+    libssl-dev \
     apt-transport-https \
     && rm -rf /var/lib/apt/lists/* \
     && git config --global credential.helper store \
