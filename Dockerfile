@@ -25,6 +25,7 @@ RUN apt-get update \
                 pytest==3.9.2 \
                 fabric==2.4.0 \
                 aliyun-python-sdk-core-v3==2.12.1 \
+		python-ldap==3.1.0 \
     # Set Timezone with CST
     && /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo 'Asia/Shanghai' >/etc/timezone
