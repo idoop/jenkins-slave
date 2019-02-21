@@ -5,10 +5,9 @@ MAINTAINER Swire Chen<idoop@msn.cn>
 USER root
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    build-essential \
-    automake \
-    qt5-default \
-    libtool \
+       automake \
+       qt5-default \
+       libtool \
     && rm -rf /var/lib/apt/lists/* \
 
 USER jenkins
