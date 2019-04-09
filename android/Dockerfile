@@ -3,51 +3,50 @@ MAINTAINER Swire Chen<idoop@msn.cn>
 
 USER root
 
-ENV ANDROID_SDK_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip" \
-    ANDROID_BUILD_TOOLS_VERSION=27.0.0 \
-    ANDROID_APIS="android-10,android-15,android-16,android-17,android-18,android-19,android-20,android-21,android-22,android-23,android-24,android-25,android-26" \
-    ANT_HOME="/usr/share/ant" \
-    MAVEN_HOME="/usr/share/maven" \
-    GRADLE_HOME="/usr/share/gradle" \
-    ANDROID_HOME="/opt/android" \
-    NODEJS_HOME="/opt/node" \
-    NODEJS_VERSION="6.14.3" \
-    GRADLE_VERSION=4.5.1
+ARG ANDROID_APIS="android-20,android-21,android-22,android-23,android-24,android-25,android-26,android-27,android-28"
+ARG ANDROID_BUILD_TOOLS_VER=28.0.2
+ARG ANDROID_SDK_TOOLS_VER=4333796
+ARG FLUTTER_VER=1.2.1-stable
+ARG GRADLE_VER=5.3.1
 
-ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$ANT_HOME/bin:$MAVEN_HOME/bin:$GRADLE_HOME/bin:$NODEJS_HOME/bin
+ENV ANDROID_HOME="/opt/android" \
+    FLUTTER_HOME="/opt/flutter" \
+    FLUTTER_STORAGE_BASE_URL="https://storage.flutter-io.cn" \
+    GRADLE_HOME="/usr/share/gradle" \
+    PUB_HOSTED_URL="https://pub.flutter-io.cn"
+
+ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools:${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS_VER}:${GRADLE_HOME}/bin:${FLUTTER_HOME}/bin:${FLUTTER_HOME}/bin/cache/dart-sdk/bin
 
 RUN dpkg --add-architecture i386 \
     && apt-get -qq update \
     && apt-get -qq install -y lib32stdc++6 lib32z1 --no-install-recommends \
-    
-    # Install OSS2 for APK hot upgrade
-    && pip install oss2 \
-    
-    # Install Nodejs
-    && mkdir -p ${NODEJS_HOME}/bin && cd ${NODEJS_HOME} \
-    && curl -sL https://nodejs.org/dist/v${NODEJS_VERSION}/node-v${NODEJS_VERSION}-linux-x64.tar.gz | tar xz --strip-components=1 \
-    
-    # Install Ionic Cordova
-    && npm install -g ionic cordova gulp cordova-hot-code-push-cli \
 
     # Install Gradle
-    && curl -SL https://downloads.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip -o /tmp/gradle.zip \
-    && unzip /tmp/gradle.zip -d /tmp/ && rm /tmp/gradle.zip \
-    && mv /tmp/gradle-$GRADLE_VERSION /usr/share/gradle \
+    && curl -SL https://downloads.gradle.org/distributions/gradle-${GRADLE_VER}-bin.zip -o /tmp/gradle.zip \
+    && unzip /tmp/gradle.zip -d /tmp/ \
+    && rm /tmp/gradle.zip \
+    && mv /tmp/gradle-${GRADLE_VER} ${GRADLE_HOME} \
 
     # Install Android SDK
-    && mkdir -p ${ANDROID_HOME} && cd ${ANDROID_HOME} \
-    && curl -SL ${ANDROID_SDK_URL} -o /tmp/tools.zip \
-    && unzip /tmp/tools.zip -d ./ && rm /tmp/tools.zip \
-    && echo y | android update sdk -a -u -t platform-tools,${ANDROID_APIS},build-tools-${ANDROID_BUILD_TOOLS_VERSION} \
-    && chmod a+x -R $ANDROID_HOME \
-    && chown -R root:root $ANDROID_HOME \
+    && mkdir -p ${ANDROID_HOME} \
+    && cd ${ANDROID_HOME} \
+    && curl -sSL https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS_VER}.zip -o /tmp/tools.zip \
+    && unzip /tmp/tools.zip -d ./ \
+    && rm /tmp/tools.zip \
+    && yes | sdkmanager --licenses \
+    && yes | android update sdk -a -u -t platform-tools,${ANDROID_APIS},build-tools-${ANDROID_BUILD_TOOLS_VER} \
+    && chmod a+x -R ${ANDROID_HOME} \
+    && chown -R root:root ${ANDROID_HOME} \
+
+    # Install Flutter
+    && curl -sSL https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_v${FLUTTER_VER}.tar.xz -o /tmp/flutter.tar.xz \
+    && tar -xf /tmp/flutter.tar.xz -C /opt \
+    && rm /tmp/flutter.tar.xz \
+    && flutter config --no-analytics \
+
+    # Clean
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && apt-get autoremove -y \
-    && apt-get clean \
-    
-    # Set Timezone with CST
-    && /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && echo 'Asia/Shanghai' >/etc/timezone
+    && apt-get clean
   
 USER jenkins
